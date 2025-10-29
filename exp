@@ -1,0 +1,295 @@
+# --- Experiment 1: Git Branching ---
+mkdir my-project
+cd my-project
+git init
+echo "v1" > README.md
+git add .
+git commit -m "Initial commit"
+git remote add origin <YOUR_GITHUB_URL>
+git branch -M main
+git push -u origin main
+git checkout -b feature-branch
+echo "new feature" >> README.md
+git add .
+git commit -m "Added new feature"
+git push -u origin feature-branch
+# (Merge the Pull Request on GitHub)
+git checkout main
+git pull origin main
+git branch -d feature-branch
+git push origin --delete feature-branch
+
+# --- Experiment 2: Git Resets ---
+# (Assuming you are in the my-project directory)
+echo "A" > file-a.txt
+git add . && git commit -m "Add A"
+echo "B" > file-b.txt
+git add . && git commit -m "Add B"
+git push origin main
+# Test soft reset
+git reset --soft HEAD~1
+git status
+# Reset for hard test
+git reset --hard origin/main
+# Test hard reset
+git reset --hard HEAD~1
+ls
+# Force push the reset
+git push origin main --force
+
+# --- Experiment 3: GitHub to GitLab ---
+# (Assuming you are in the my-project directory)
+git remote add gitlab <YOUR_GITLAB_URL>
+git push -u gitlab main
+
+# --- Experiment 4: GitLab to Bitbucket ---
+git clone <YOUR_GITLAB_URL> gitlab-project
+cd gitlab-project
+git remote add bitbucket <YOUR_BITBUCKET_URL>
+git push -u bitbucket main
+cd .. 
+# (Go back to original project dir for next step)
+
+# --- Experiment 5: Merge Conflict ---
+# (Assuming you are in the my-project directory)
+git checkout main
+git pull origin main
+echo "original line" > a.txt
+git add .
+git commit -m "Create baseline for conflict"
+git push origin main
+git checkout -b branch-1
+echo "change from branch-1" > a.txt
+git add .
+git commit -m "Change 1"
+git checkout main
+git checkout -b branch-2
+echo "change from branch-2" > a.txt
+git add .
+git commit -m "Change 2"
+git checkout main
+git merge branch-1
+git merge branch-2
+# (At this point, you must MANUALLY EDIT a.txt to fix it)
+# nano a.txt
+# (After fixing and saving the file)
+git add a.txt
+git commit -m "Resolved merge conflict"
+git push origin main
+
+# --- Experiment 6: Basic Jenkins Pipeline ---
+# 1. Add this file named "Jenkinsfile" to your Git project
+# 2. In Jenkins, create a "Pipeline" job and point it to your repo
+
+echo '
+pipeline {
+    agent any
+    stages {
+        stage("Checkout") {
+            steps {
+                git "https://github.com/your-username/my-project.git"
+            }
+        }
+        stage("Build") {
+            steps {
+                echo "Building website..."
+            }
+        }
+        stage("Deploy") {
+            steps {
+                echo "Deploying website..."
+            }
+        }
+    }
+}
+' > Jenkinsfile
+
+# 3. Commit and push this new file
+git add Jenkinsfile
+git commit -m "Add basic Jenkinsfile"
+git push origin main
+
+
+# --- Experiment 7: Containerized Jenkins Pipeline ---
+# 1. Overwrite your Jenkinsfile with this new content.
+# 2. This version runs the build step inside a "node:18" Docker container.
+
+echo '
+pipeline {
+    agent any
+    stages {
+        stage("Checkout") {
+            steps {
+                git "https://github.com/your-username/my-project.git"
+            }
+        }
+        stage("Build in Container") {
+            agent {
+                docker { image "node:18-alpine" }
+            }
+            steps {
+                echo "Building inside a Node.js container..."
+                sh "node -v"
+            }
+        }
+        stage("Deploy") {
+            steps {
+                echo "Deploying website..."
+            }
+        }
+    }
+}
+' > Jenkinsfile
+
+# 3. Commit and push the update
+git add Jenkinsfile
+git commit -m "Update Jenkinsfile to be containerized"
+git push origin main
+
+
+# --- Experiment 8: Custom Docker Image (httpd) ---
+# 1. Create a simple webpage
+echo "<html><body><h1>My Custom HTTPD Server</h1></body></html>" > index.html
+
+# 2. Create the Dockerfile
+echo '
+FROM httpd:latest
+COPY ./index.html /usr/local/apache2/htdocs/
+' > Dockerfile
+
+# 3. Build the custom image
+docker build -t your-dockerhub-username/my-httpd .
+
+# 4. Test it locally
+# (Runs in background, maps port 8080 to container port 80)
+docker run -d -p 8080:80 your-dockerhub-username/my-httpd
+# (Now, open http://localhost:8080 in your browser)
+
+# 5. Push to DockerHub
+# (You must be logged in: docker login)
+docker push your-dockerhub-username/my-httpd
+
+
+# --- Experiment 9: Maven Calculator ---
+# 1. Create the project structure
+mkdir maven-calculator
+cd maven-calculator
+mkdir -p src/main/java/com/example
+mkdir -p src/test/java/com/example
+
+# 2. Create the pom.xml file
+echo '
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>calculator</artifactId>
+  <version>1.0</version>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+' > pom.xml
+
+# 3. Create the Calculator source code
+echo '
+package com.example;
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+' > src/main/java/com/example/Calculator.java
+
+# 4. Create the JUnit test
+echo '
+package com.example;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+public class CalculatorTest {
+    @Test
+    public void testAdd() {
+        Calculator calc = new Calculator();
+        assertEquals(5, calc.add(2, 3));
+    }
+}
+' > src/test/java/com/example/CalculatorTest.java
+
+# 5. Build, Test, and Package
+mvn package
+
+# 6. Run the tests (Maven does this in 'package', but you can run explicitly)
+mvn test
+
+# 7. (No main class to run, but the JAR is created in target/calculator-1.0.jar)
+ls target/
+
+
+# --- Experiment 10: Kubernetes with Minikube ---
+# 1. Start Minikube
+minikube start
+
+# 2. Create a Deployment configuration file
+# (This will run the simple "hello-world" web server from Google)
+echo '
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-world
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080
+' > deployment.yaml
+
+# 3. Create a Service configuration file
+# (This exposes the deployment to the network)
+echo '
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-service
+spec:
+  type: NodePort
+  selector:
+    app: hello-world
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+' > service.yaml
+
+# 4. Apply the configurations
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+# 5. Check the status
+kubectl get pods
+kubectl get services
+
+# 6. Get the URL to access the service
+minikube service hello-world-service
+
+# 7. Clean up
+kubectl delete -f deployment.yaml
+kubectl delete -f service.yaml
+minikube stop
