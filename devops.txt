@@ -1,0 +1,202 @@
+COMPLETE DEVOPS PRACTICAL IMPLEMENTATION GUIDE
+--------------------------------------------------
+
+PRE-REQUISITES (Install These First)
+------------------------------------
+1. Git - https://git-scm.com/downloads
+2. GitHub / GitLab / Bitbucket accounts
+3. Jenkins - https://www.jenkins.io/download/
+4. Docker Desktop - https://www.docker.com/products/docker-desktop/
+5. Java + Maven - sudo apt install openjdk-17-jdk maven
+6. Minikube + kubectl - https://minikube.sigs.k8s.io/docs/start/
+
+--------------------------------------------------
+PRACTICAL 1: Demonstrate Branching in Git
+--------------------------------------------------
+1. Initialize repository:
+   mkdir git-branch-demo
+   cd git-branch-demo
+   git init
+   echo "Hello DevOps" > index.txt
+   git add .
+   git commit -m "Initial commit"
+
+2. Create and switch to a new branch:
+   git branch feature-branch
+   git checkout feature-branch
+   echo "New feature added" >> index.txt
+   git add .
+   git commit -m "Added new feature"
+
+3. Merge branch into main:
+   git checkout main
+   git merge feature-branch
+
+4. Push to GitHub:
+   git remote add origin https://github.com/<username>/git-branch-demo.git
+   git push -u origin main
+
+--------------------------------------------------
+PRACTICAL 2: Demonstrate Git Hard and Soft Reset
+--------------------------------------------------
+1. Make multiple commits:
+   echo "v1" > file.txt
+   git add file.txt
+   git commit -m "Commit 1"
+   echo "v2" > file.txt
+   git add file.txt
+   git commit -m "Commit 2"
+   echo "v3" > file.txt
+   git add file.txt
+   git commit -m "Commit 3"
+
+2. Soft reset:
+   git reset --soft HEAD~1
+
+3. Hard reset:
+   git reset --hard HEAD~1
+
+4. Push results:
+   git push origin main --force
+
+--------------------------------------------------
+PRACTICAL 3: GitHub and GitLab Integration
+--------------------------------------------------
+1. Clone GitHub repo:
+   git clone https://github.com/<username>/git-branch-demo.git
+   cd git-branch-demo
+
+2. Add GitLab remote:
+   git remote set-url origin https://gitlab.com/<username>/gitlab-demo.git
+
+3. Push to GitLab:
+   git push -u origin main
+
+--------------------------------------------------
+PRACTICAL 4: GitLab and Bitbucket Integration
+--------------------------------------------------
+1. Clone GitLab repo:
+   git clone https://gitlab.com/<username>/gitlab-demo.git
+   cd gitlab-demo
+
+2. Add Bitbucket remote:
+   git remote set-url origin https://bitbucket.org/<username>/bitbucket-demo.git
+   git push -u origin main
+
+--------------------------------------------------
+PRACTICAL 5: Merge Conflict Resolution
+--------------------------------------------------
+1. Create branches:
+   git checkout -b branch1
+   echo "Branch 1 content" > conflict.txt
+   git add .
+   git commit -m "Branch1 change"
+
+   git checkout main
+   git checkout -b branch2
+   echo "Branch 2 content" > conflict.txt
+   git add .
+   git commit -m "Branch2 change"
+
+2. Merge and resolve:
+   git checkout branch1
+   git merge branch2
+   (edit conflict.txt manually)
+   git add conflict.txt
+   git commit -m "Resolved merge conflict"
+
+--------------------------------------------------
+PRACTICAL 6: Create a Basic Jenkins Pipeline
+--------------------------------------------------
+1. Start Jenkins at http://localhost:8080
+2. Install Git + Pipeline plugins.
+3. Create new Pipeline project.
+4. Add Jenkinsfile:
+
+   pipeline {
+       agent any
+       stages {
+           stage('Checkout') {
+               steps { git 'https://github.com/<username>/sample-website.git' }
+           }
+           stage('Build') {
+               steps { echo 'Building website...' }
+           }
+           stage('Deploy') {
+               steps { echo 'Website deployed successfully!' }
+           }
+       }
+   }
+
+5. Save and build.
+
+--------------------------------------------------
+PRACTICAL 7: Containerized Jenkins Pipeline
+--------------------------------------------------
+1. Install Docker + Jenkins Docker plugin.
+2. Add Jenkinsfile:
+
+   pipeline {
+       agent { docker { image 'node:16' } }
+       stages {
+           stage('Build') { steps { sh 'echo "Building inside Docker container"' } }
+           stage('Deploy') { steps { sh 'echo "Deploying containerized app"' } }
+       }
+   }
+
+--------------------------------------------------
+PRACTICAL 8: Build and Publish a Custom Docker Image
+--------------------------------------------------
+1. Create project folder:
+   mkdir docker-demo && cd docker-demo
+   echo "<h1>Hello from Docker</h1>" > index.html
+
+2. Create Dockerfile:
+   FROM httpd:latest
+   COPY ./index.html /usr/local/apache2/htdocs/
+
+3. Build and test:
+   docker build -t myhttpd:latest .
+   docker run -d -p 8080:80 myhttpd:latest
+
+4. Push to DockerHub:
+   docker tag myhttpd:latest <username>/myhttpd:latest
+   docker push <username>/myhttpd:latest
+
+--------------------------------------------------
+PRACTICAL 9: Maven-Based Calculator Application
+--------------------------------------------------
+1. Create Maven project:
+   mvn archetype:generate -DgroupId=com.example -DartifactId=calculator -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+   cd calculator
+
+2. Edit App.java and AppTest.java
+
+3. Build & Test:
+   mvn clean test
+   mvn package
+   java -cp target/calculator-1.0-SNAPSHOT.jar com.example.App
+
+--------------------------------------------------
+PRACTICAL 10: Minikube Container Orchestration
+--------------------------------------------------
+1. Start Minikube:
+   minikube start
+
+2. Create deployment:
+   kubectl create deployment my-httpd --image=httpd
+
+3. Expose service:
+   kubectl expose deployment my-httpd --type=NodePort --port=80
+
+4. Get service URL:
+   minikube service my-httpd --url
+
+5. Scale pods:
+   kubectl scale deployment my-httpd --replicas=3
+
+6. Check pods:
+   kubectl get pods
+
+--------------------------------------------------
+END OF PRACTICAL GUIDE
