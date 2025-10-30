@@ -419,3 +419,34 @@ kubectl delete deployment hello-minikube
 
 # Stop Minikube
 minikube stop
+
+
+
+
+
+
+
+
+C:\Users\Administrator\poe>git config user.email "sachinskarakal@coep.sveri.ac.in"
+
+C:\Users\Administrator\poe>git config user.name "sachin"
+
+C:\Users\Administrator\poe>git remote add origin "https://github.com/sachin50sk/poe.git"
+
+C:\Users\Administrator\poe>git checkout -b branch1
+Switched to a new branch 'branch1'
+
+C:\Users\Administrator\poe>nano a.txt
+'nano' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Users\Administrator\poe>git add .
+
+C:\Users\Administrator\poe>git commit -m "added 1st commit"
+[branch1 (root-commit) d953e6c] added 1st commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 a.txt
+
+C:\Users\Administrator\poe>git push origin branch1
+remote: Permission to sachin50sk/poe.git denied to AmanDikole.
+fatal: unable to access 'https://github.com/sachin50sk/poe.git/': The requested URL returned error: 403
